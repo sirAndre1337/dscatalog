@@ -4,7 +4,7 @@ import ProductCard from './components/ProductCard';
 import './styles.scss';
 import { makeRequest } from '../../core/utils/request';
 import { ProductsResponse } from '../../core/types/Product';
-import ProductCardLoader from './components/ProductCardLoader';
+import ProductCardLoader from './components/Loaders/ProductCardLoader';
 
 const Catalog = () => {
     const [productResponse, setProductResponse] = useState<ProductsResponse>();
