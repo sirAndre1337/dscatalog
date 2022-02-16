@@ -1,11 +1,11 @@
 import ButtonIcon from 'core/components/ButtonIcon';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import AuthCard from '../Card';
 import './styles.scss';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import qs from 'qs';
-import { CLIENT_ID, CLIENT_SECRET } from 'core/utils/auth';
+import { CLIENT_ID, CLIENT_SECRET, saveSessionData } from 'core/utils/auth';
 import { useState } from 'react';
 
 
@@ -19,6 +19,7 @@ const Login = () => {
     
     const { register, handleSubmit, formState: { errors }} = useForm<FormData>();
     const [hasError,setHasError] = useState(false);
+    const history = useHistory();
 
     const token = `${CLIENT_ID}:${CLIENT_SECRET}`;
 
@@ -36,6 +37,8 @@ const Login = () => {
       }).then(response => {
         console.log(response.data)
         setHasError(false);
+        saveSessionData(response.data);
+        history.push('/admin');
       })
       .catch(() => {
         setHasError(true);
