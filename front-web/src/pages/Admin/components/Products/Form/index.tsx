@@ -1,5 +1,6 @@
 import { makeRequest } from 'core/utils/request';
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
 
@@ -20,6 +21,8 @@ const Form = () => {
         description: ''
     });
 
+    const history = useHistory();
+
     const handleOnChange = (event: FormEvent) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -33,7 +36,12 @@ const Form = () => {
             imgUrl: 'https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350',
             categories: [{ id: formData.category }]
         }
-        makeRequest({ url: '/products', method: 'POST', data: payload } , 'addProduct');
+        makeRequest({ url: '/products', method: 'POST', data: payload } , 'addProduct')
+        .then(() => {
+            history.push('/products')
+        }).catch(() => {
+            history.push('/admin/auth')
+        });
     }
 
     return (
