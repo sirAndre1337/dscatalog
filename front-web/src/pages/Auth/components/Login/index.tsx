@@ -3,19 +3,35 @@ import { Link } from 'react-router-dom';
 import AuthCard from '../Card';
 import './styles.scss';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import qs from 'qs';
+import { CLIENT_ID, CLIENT_SECRET } from 'core/utils/auth';
+
 
 type FormData = {
-    email: string;
+    username: string;
     password: string;
 }
 
-const Login = () => {
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+const Login = () => {
+    
+    const { register, handleSubmit, formState: { errors }} = useForm<FormData>();
+
+    const token = `${CLIENT_ID}:${CLIENT_SECRET}`;
+
+    const headers = {
+        Authorization: `Basic ${window.btoa(token)}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
 
     const onSubmit = (data: FormData) => {
+        const payload = qs.stringify({...data, grant_type: 'password'});
         console.log(data);
-        // Fazer a chamada a API
+        
+      axios.post('http://localhost:8080/oauth/token' , payload , {
+          headers : headers
+      }).then(response => console.log(response.data));
     }
 
     return (
@@ -26,9 +42,9 @@ const Login = () => {
                         type="email"
                         className='form-control input-base margin-bottom-30'
                         placeholder='Email'
-                        {...register('email', { required: true })}
+                       {...register('username' , {required: true})}
                     />
-                    {errors.email && <p>email is required.</p>}
+                    {errors.username && <p>email is required.</p>}
                     <input
                         type="password"
                         className='form-control input-base'
