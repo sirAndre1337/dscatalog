@@ -7,7 +7,6 @@ type RequestParams = {
     url: string;
     data?: object | string;
     params?: object;
-    headers?: object;
 }
 
 type LoginData = {
@@ -16,27 +15,24 @@ type LoginData = {
 }
 
 const BASE_URL = 'http://localhost:8080';
+const token = `${CLIENT_ID}:${CLIENT_SECRET}`;
 
-export const makeRequest = ({ method = 'GET', url , data , params, headers }:RequestParams) => {
+
+export const makeRequest = ({ method = 'GET', url , data , params }:RequestParams) => {
     return axios({
         method,
         url: `${BASE_URL}${url}`,
         data,
         params,
-        //headers, por algum motivo da error de overload entao fiz na unha e nao estou usando o metodo ao fazer o login.
+        headers: {Authorization: `Basic ${window.btoa(token)}`,
+        'Content-Type': 'application/x-www-form-urlencoded'}
     });
 }
 
-export const makeLogin = (loginData: LoginData) => {
-    const token = `${CLIENT_ID}:${CLIENT_SECRET}`;
-
-    const headers = {
-        Authorization: `Basic ${window.btoa(token)}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
+export const makeLogin = (loginData: LoginData) => {   
 
     const payload = qs.stringify({...loginData, grant_type: 'password'});
 
-    return makeRequest({url: '/oauth/token', data: payload , method: 'POST', headers})
+    return makeRequest({url: '/oauth/token', data: payload , method: 'POST' })
 
 }
