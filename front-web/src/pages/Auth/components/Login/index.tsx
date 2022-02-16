@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import qs from 'qs';
 import { CLIENT_ID, CLIENT_SECRET } from 'core/utils/auth';
+import { useState } from 'react';
 
 
 type FormData = {
@@ -17,6 +18,7 @@ type FormData = {
 const Login = () => {
     
     const { register, handleSubmit, formState: { errors }} = useForm<FormData>();
+    const [hasError,setHasError] = useState(false);
 
     const token = `${CLIENT_ID}:${CLIENT_SECRET}`;
 
@@ -31,12 +33,23 @@ const Login = () => {
         
       axios.post('http://localhost:8080/oauth/token' , payload , {
           headers : headers
-      }).then(response => console.log(response.data));
+      }).then(response => {
+        console.log(response.data)
+        setHasError(false);
+      })
+      .catch(() => {
+        setHasError(true);
+      });
     }
 
     return (
         <div>
             <AuthCard title="Login">
+                {hasError && (
+                    <div className='alert login-error'>
+                        Usuário ou senha inválidos!
+                    </div>
+                )}
                 <form className='login-form' onSubmit={handleSubmit(onSubmit)}>
                     <input
                         type="email"
@@ -49,8 +62,9 @@ const Login = () => {
                         type="password"
                         className='form-control input-base'
                         placeholder='Senha'
-                        {...register('password')}
+                        {...register('password' , {required: true})}
                     />
+                    {errors.password && <p>password is required</p>}
                     <Link to="/admin/auth/recover" className='login-link-recover'>
                         Esqueci a senha?
                     </Link>
