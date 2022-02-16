@@ -19,7 +19,7 @@ const Login = () => {
     const history = useHistory();
 
     const onSubmit = (data: FormData) => {
-        makeLogin(data)
+        makeLogin(data , 'login')
         .then(response => {
             setHasError(false);
             saveSessionData(response.data);

@@ -33,7 +33,7 @@ const Form = () => {
             imgUrl: 'https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350',
             categories: [{ id: formData.category }]
         }
-        makeRequest({ url: '/products', method: 'POST', data: payload });
+        makeRequest({ url: '/products', method: 'POST', data: payload } , 'addProduct');
     }
 
     return (
