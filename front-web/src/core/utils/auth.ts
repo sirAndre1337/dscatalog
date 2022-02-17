@@ -62,7 +62,7 @@ export const isAllowedByRole = (routeRoles: Role[] = []) => {
     }
 
     const sessionData = getSessionData();
-   
+   // Verifica se existe o token jwt
     if(sessionData.access_token === undefined) {
         return false;
     }
