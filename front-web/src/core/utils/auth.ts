@@ -12,7 +12,7 @@ type LoginResponse = {
     userId: number;
 }
 
-type Role = "ROLE_OPERATOR" | "ROLE_ADMIN";
+export type Role = "ROLE_OPERATOR" | "ROLE_ADMIN";
 
 type AccessToken = {
     "exp": number;
@@ -54,4 +54,14 @@ export const isAuthenticated = () => {
     // Verifica se o authData esta no localStore
     // Verifica se o token não esta expirado
     return sessionData.access_token && isTokenValid();
+}
+
+export const isAllowedByRole = (routeRoles: Role[] = []) => {
+    if(routeRoles.length === 0) {
+        return true;
+    }
+
+    const { authorities } = getAccessTokenDecode();
+    // Verifica se as roles do usuario existem na role passada por parametro
+    return routeRoles.some(role => authorities.includes(role));
 }
