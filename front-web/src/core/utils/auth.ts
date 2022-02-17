@@ -61,7 +61,12 @@ export const isAllowedByRole = (routeRoles: Role[] = []) => {
         return true;
     }
 
-    const { authorities } = getAccessTokenDecode();
+    const sessionData = getSessionData();
+   
+    if(sessionData.access_token === undefined) {
+        return false;
+    }
+    const tokenDecoded = jwtDecode<AccessToken>(sessionData.access_token);
     // Verifica se as roles do usuario existem na role passada por parametro
-    return routeRoles.some(role => authorities.includes(role));
+    return routeRoles.some(role => tokenDecoded.authorities.includes(role));
 }
