@@ -40,7 +40,7 @@ const Form = () => {
         .then(() => {
             history.push('/products')
         }).catch(() => {
-            // history.push('/admin/auth')
+            // history.push('/auth/login')
         });
     }
 
