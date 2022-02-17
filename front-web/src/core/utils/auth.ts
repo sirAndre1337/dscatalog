@@ -34,8 +34,12 @@ export const getSessionData = () => {
 export const getAccessTokenDecode = () => {
     const sessionData = getSessionData();
 
-    const tokenDecoded = jwtDecode(sessionData.access_token);
-    return tokenDecoded as AccessToken;
+    try {
+        const tokenDecoded = jwtDecode(sessionData.access_token);
+        return tokenDecoded as AccessToken;
+    } catch (error) {
+        return {} as AccessToken;
+    }
 }
 
 export const isTokenValid = () => {
@@ -61,12 +65,7 @@ export const isAllowedByRole = (routeRoles: Role[] = []) => {
         return true;
     }
 
-    const sessionData = getSessionData();
-   // Verifica se existe o token jwt
-    if(sessionData.access_token === undefined) {
-        return false;
-    }
-    const tokenDecoded = jwtDecode<AccessToken>(sessionData.access_token);
+    const { authorities } = getAccessTokenDecode();
     // Verifica se as roles do usuario existem na role passada por parametro
-    return routeRoles.some(role => tokenDecoded.authorities.includes(role));
+    return routeRoles.some(role => authorities?.includes(role));
 }
