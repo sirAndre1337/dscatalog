@@ -38,20 +38,31 @@ const Login = () => {
                     </div>
                 )}
                 <form className='login-form' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='margin-bottom-30'>
                     <input
                         type="email"
-                        className='form-control input-base margin-bottom-30'
+                        className={`form-control input-base ${errors.username ? 'is-invalid' : ''}`}
                         placeholder='Email'
-                       {...register('username' , {required: true})}
+                       {...register('username' , {required: 'Campo email obrigatório' , pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Email inválido"
+                      }})}
                     />
-                    {errors.username && <p>email is required.</p>}
+                   {errors.username &&
+                    <div className='invalid-feedback d-block'>
+                        {errors.username.message}
+                    </div>}                  
+                    </div>
                     <input
                         type="password"
-                        className='form-control input-base'
+                        className={`form-control input-base ${errors.password ? 'is-invalid' : ''}`}
                         placeholder='Senha'
-                        {...register('password' , {required: true})}
+                        {...register('password' , {required: 'Campo senha obrigatório'})}
                     />
-                    {errors.password && <p>password is required</p>}
+                    {errors.password &&
+                    <div className='invalid-feedback d-block'>
+                        {errors.password.message}
+                    </div>}
                     <Link to="/admin/auth/recover" className='login-link-recover'>
                         Esqueci a senha?
                     </Link>
