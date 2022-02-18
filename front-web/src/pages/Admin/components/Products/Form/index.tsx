@@ -1,5 +1,5 @@
 import { makeRequest } from 'core/utils/request';
-import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
@@ -9,81 +9,85 @@ type FormState = {
     price: string;
     category: number;
     description: string;
+    imgUrl: string;
 }
 
-type FormEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
-
+// https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350
 const Form = () => {
-    const [formData, setFormData] = useState<FormState>({
-        name: '',
-        price: '',
-        category: 1,
-        description: ''
-    });
+    const { register, handleSubmit, formState: { errors } } = useForm<FormState>();
 
-    const history = useHistory();
-
-    const handleOnChange = (event: FormEvent) => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setFormData(data => ({ ...data, [name]: value }));
-    }
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const onSubmit = (formData: FormState) => {
+        console.log(formData);
         const payload = {
             ...formData,
-            imgUrl: 'https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350',
-            categories: [{ id: formData.category }]
+            categories: [{ id: 1 }]
         }
-        makeRequest({ url: '/products', method: 'POST', data: payload } , 'addProduct')
-        .then(() => {
-            history.push('/products')
-        }).catch(() => {
-            // history.push('/auth/login')
-        });
+        makeRequest({ url: '/products', method: 'POST', data: payload }, 'addProduct')
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <BaseForm title="CADASTRAR UM PRODUTO">
                 <div className='row'>
                     <div className="col-6">
-                        <input
-                            type="text"
-                            value={formData.name}
-                            name="name"
-                            className='form-control mb-5'
-                            onChange={handleOnChange}
-                            placeholder='Nome do produto'
-                        />
-                        <select
+                        <div className='margin-bottom-30'>
+                            <input
+                                type="text"
+                                className={`form-control input-base ${errors.name ? 'is-invalid' : ''}`}
+                                placeholder='Nome do produto'
+                                {...register('name', {
+                                    required: 'Campo nome obrigatório',
+                                    minLength: { value: 2, message: 'O Campo deve ter no mínimo 2 caracteres'},
+                                    maxLength: { value: 50, message: 'O Campo deve ter no máximo 50 caracteres'}
+                                })}
+                            />
+                            {errors.name &&
+                                <div className='invalid-feedback d-block'>
+                                    {errors.name.message}
+                                </div>}
+                        </div>
+                        {/* <select
                             value={formData.category}
                             name='category'
-                            className='form-control mb-5'
+                            className='form-control margin-bottom-30 input-base'
                             onChange={handleOnChange}
                         >
                             <option value="1">Livros</option>
                             <option value="2">Eletronicos</option>
                             <option value="3">Computadores</option>
-                        </select>
-                        <input
-                            type="text"
-                            value={formData.price}
-                            name='price'
-                            className='form-control'
-                            onChange={handleOnChange}
-                            placeholder='Preço'
-                        />
+                        </select> */}
+                        <div className='margin-bottom-30'>
+                            <input
+                                type="number"
+                                className={`form-control input-base ${errors.price ? 'is-invalid' : ''}`}
+                                placeholder='Preço'
+                                {...register('price', { required: 'Campo preço obrigatório' })}
+                            />
+                            {errors.price &&
+                                <div className='invalid-feedback d-block'>
+                                    {errors.price.message}
+                                </div>}
+                        </div>
+                        <div className='margin-bottom-30'>
+                            <input
+                                type="text"
+                                className={`form-control input-base ${errors.imgUrl ? 'is-invalid' : ''}`}
+                                placeholder='Imagem do produto'
+                                {...register('imgUrl', { required: 'Campo imagem obrigatório'})}
+                            />
+                            {errors.imgUrl &&
+                                <div className='invalid-feedback d-block'>
+                                    {errors.imgUrl.message}
+                                </div>}
+                        </div>
                     </div>
                     <div className="col-6">
                         <textarea
-                            className='form-control'
-                            name="description"
-                            value={formData.description}
+                            className='form-control input-base h-auto'
                             cols={30}
                             rows={10}
-                            onChange={handleOnChange}
+                            placeholder="Descrição"
+                            {...register('description')}
                         ></textarea>
                     </div>
                 </div>
