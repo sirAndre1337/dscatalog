@@ -1,6 +1,7 @@
 import { makeRequest } from 'core/utils/request';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
 
@@ -15,7 +16,7 @@ type FormState = {
 // https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350
 const Form = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormState>();
-
+    const history = useHistory();
     const onSubmit = (formData: FormState) => {
         console.log(formData);
         const payload = {
@@ -23,6 +24,13 @@ const Form = () => {
             categories: [{ id: 1 }]
         }
         makeRequest({ url: '/products', method: 'POST', data: payload }, 'addProduct')
+        .then(() => {
+            toast.info('Produto salvo com sucesso!');
+            history.push('/admin/products');
+        })
+        .catch(() => {
+            toast.error('Erro ao salvar produto!');
+        })
     }
 
     return (
@@ -37,8 +45,8 @@ const Form = () => {
                                 placeholder='Nome do produto'
                                 {...register('name', {
                                     required: 'Campo nome obrigatório',
-                                    minLength: { value: 2, message: 'O Campo deve ter no mínimo 2 caracteres'},
-                                    maxLength: { value: 50, message: 'O Campo deve ter no máximo 50 caracteres'}
+                                    minLength: { value: 2, message: 'O Campo deve ter no mínimo 2 caracteres' },
+                                    maxLength: { value: 50, message: 'O Campo deve ter no máximo 50 caracteres' }
                                 })}
                             />
                             {errors.name &&
@@ -73,7 +81,7 @@ const Form = () => {
                                 type="text"
                                 className={`form-control input-base ${errors.imgUrl ? 'is-invalid' : ''}`}
                                 placeholder='Imagem do produto'
-                                {...register('imgUrl', { required: 'Campo imagem obrigatório'})}
+                                {...register('imgUrl', { required: 'Campo imagem obrigatório' })}
                             />
                             {errors.imgUrl &&
                                 <div className='invalid-feedback d-block'>
