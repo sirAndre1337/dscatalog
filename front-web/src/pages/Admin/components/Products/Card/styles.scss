@@ -1,0 +1,48 @@
+.product-card-admin {
+    margin-bottom: 20px;
+    border-radius: 10px;
+
+    .product-currency {
+       font-size: 14px; 
+    }
+
+    .product-price {
+        font-size: 24px;
+    }
+}
+
+.product-card-image-admin {
+    width: 100px;
+    height: 100px;
+}
+
+.product-card-name-admin {
+    font-size: 18px;
+    line-height: 25px;
+    letter-spacing: -0.015em;
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    background-color: transparent;
+    background-image: none;
+    border-color: #dc3545;
+}
+
+.badge-category {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    color: black;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    background-color: #6c757d;
+    border-radius: 10rem;
+    margin-right: 3px;
+    font-family: system-ui;
+}
