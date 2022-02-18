@@ -16,7 +16,9 @@ const List = () => {
     useEffect(() => {
         const params = {
             page: activePage,
-            linesPerPage: 4
+            linesPerPage: 4,
+            direction: 'DESC',
+            orderBy: 'id'
         }
         setIsLoading(true)
         makeRequest({ url: '/products', params: params })
@@ -32,7 +34,7 @@ const List = () => {
 
     return (
         <div className="admin-products-list">
-            <button className="btn btn-primary btn-lg" onClick={handleCreate}>
+            <button className="btn btn-primary btn-lg text-white" onClick={handleCreate}>
                 ADICIONAR
             </button>
             <div className='admin-list-container'>

@@ -1,6 +1,7 @@
 import { makeRequest } from 'core/utils/request';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
@@ -13,29 +14,53 @@ type FormState = {
     imgUrl: string;
 }
 
+type ParamsType = {
+    productId: string;
+}
+
 // https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350
 const Form = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<FormState>();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormState>();
     const history = useHistory();
+    const { productId } = useParams<ParamsType>();
+    const isEditing = productId !== 'create';
+
+    useEffect(() => {
+        if(isEditing) {
+            makeRequest({ url: `/products/${productId}` })
+            .then(response => {
+                setValue('name' , response.data.name);
+                setValue('price' , response.data.price);
+                setValue('imgUrl' , response.data.imgUrl);
+                setValue('description' , response.data.description);
+                setValue('category' , response.data.category);
+            })
+        }
+    }, [productId, isEditing, setValue]);
+
     const onSubmit = (formData: FormState) => {
         console.log(formData);
         const payload = {
             ...formData,
             categories: [{ id: 1 }]
         }
-        makeRequest({ url: '/products', method: 'POST', data: payload }, 'addProduct')
-        .then(() => {
-            toast.info('Produto salvo com sucesso!');
-            history.push('/admin/products');
-        })
-        .catch(() => {
-            toast.error('Erro ao salvar produto!');
-        })
+        makeRequest({ 
+            url: isEditing ? `/products/${productId}` : '/products',
+            method: isEditing ? 'PUT' : 'POST',
+            data: payload },
+            'addProduct')
+            .then(() => {
+                toast.info(isEditing ? 'Produto atualizado com sucesso!' : 'Produto salvo com sucesso!');
+                history.push('/admin/products');
+            })
+            .catch(() => {
+                toast.error('Erro ao salvar produto!');
+            })
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <BaseForm title="CADASTRAR UM PRODUTO">
+            <BaseForm title={isEditing ? 'Editar produto' : 'Cadastrar um produto'}>
                 <div className='row'>
                     <div className="col-6">
                         <div className='margin-bottom-30'>
