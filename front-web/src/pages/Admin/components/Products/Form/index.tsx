@@ -1,15 +1,18 @@
 import { makeRequest } from 'core/utils/request';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm, Controller, ControllerRenderProps, ControllerFieldState, UseFormStateReturn } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import BaseForm from '../../BaseForm';
+import Select from 'react-select';
 import './styles.scss';
+import { Category } from 'core/types/Product';
+
 
 type FormState = {
     name: string;
     price: string;
-    category: number;
+    categories: Category[];
     description: string;
     imgUrl: string;
 }
@@ -20,34 +23,40 @@ type ParamsType = {
 
 // https://www.pontofrio-imagens.com.br/Control/ArquivoExibir.aspx?IdArquivo=1377580350
 const Form = () => {
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormState>();
+    const { register, handleSubmit, formState: { errors }, setValue, control } = useForm<FormState>();
     const history = useHistory();
     const { productId } = useParams<ParamsType>();
+    const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+    const [categories, setCategories] = useState<Category[]>([]);
     const isEditing = productId !== 'create';
 
     useEffect(() => {
-        if(isEditing) {
+        if (isEditing) {
             makeRequest({ url: `/products/${productId}` })
-            .then(response => {
-                setValue('name' , response.data.name);
-                setValue('price' , response.data.price);
-                setValue('imgUrl' , response.data.imgUrl);
-                setValue('description' , response.data.description);
-                setValue('category' , response.data.category);
-            })
+                .then(response => {
+                    setValue('name', response.data.name);
+                    setValue('price', response.data.price);
+                    setValue('imgUrl', response.data.imgUrl);
+                    setValue('description', response.data.description);
+                    setValue('categories', response.data.categories);
+                })
         }
     }, [productId, isEditing, setValue]);
 
+    useEffect(() => {
+        setIsLoadingCategories(true)
+        makeRequest({ url: '/categories' })
+            .then(response => { setCategories(response.data.content) })
+            .finally(() => setIsLoadingCategories(false));
+    }, [])
+
     const onSubmit = (formData: FormState) => {
-        console.log(formData);
-        const payload = {
-            ...formData,
-            categories: [{ id: 1 }]
-        }
-        makeRequest({ 
+    
+        makeRequest({
             url: isEditing ? `/products/${productId}` : '/products',
             method: isEditing ? 'PUT' : 'POST',
-            data: payload },
+            data: formData
+        },
             'headerPadrao')
             .then(() => {
                 toast.info(isEditing ? 'Produto atualizado com sucesso!' : 'Produto salvo com sucesso!');
@@ -79,16 +88,28 @@ const Form = () => {
                                     {errors.name.message}
                                 </div>}
                         </div>
-                        {/* <select
-                            value={formData.category}
-                            name='category'
-                            className='form-control margin-bottom-30 input-base'
-                            onChange={handleOnChange}
-                        >
-                            <option value="1">Livros</option>
-                            <option value="2">Eletronicos</option>
-                            <option value="3">Computadores</option>
-                        </select> */}
+                        <div className='margin-bottom-30'>
+                            <Controller
+                                rules={{ required : true }}
+                                name="categories"
+                                control={control}
+                                render={({ field }) => 
+                                <Select
+                                {...field}
+                                    isLoading={isLoadingCategories}
+                                    isMulti
+                                    getOptionLabel={(option: Category) => option.name}
+                                    getOptionValue={(option: Category) => String(option.id)}
+                                    options={categories}
+                                    placeholder="Categorias"
+                                    classNamePrefix="categories-select"
+                                />}
+                            />                        
+                            {errors.categories &&
+                                <div className='invalid-feedback d-block'>
+                                    Campo obrigatório
+                                </div>}
+                        </div>
                         <div className='margin-bottom-30'>
                             <input
                                 type="number"
