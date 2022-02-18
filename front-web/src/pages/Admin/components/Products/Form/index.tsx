@@ -48,7 +48,7 @@ const Form = () => {
             url: isEditing ? `/products/${productId}` : '/products',
             method: isEditing ? 'PUT' : 'POST',
             data: payload },
-            'addProduct')
+            'headerPadrao')
             .then(() => {
                 toast.info(isEditing ? 'Produto atualizado com sucesso!' : 'Produto salvo com sucesso!');
                 history.push('/admin/products');

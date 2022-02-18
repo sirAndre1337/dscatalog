@@ -37,7 +37,7 @@ export const makeRequest = ({ method = 'GET', url , data , params }:RequestParam
         Authorization: `Basic ${window.btoa(token)}`,
        'Content-Type': 'application/x-www-form-urlencoded'}
     }
-    else if (req === 'addProduct') {
+    else if (req === 'headerPadrao') {
         headers = {
             Authorization: `Bearer ${sessionData.access_token}`}
     }    
