@@ -1,5 +1,7 @@
 package com.devsuperior.dscatalog.services;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,10 @@ public class ProductService {
 	private CategoryRepository categoryRepository;
 
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
-		Page<Product> page = repository.findAll(pageRequest);
-		repository.find(page.toList());
+	public Page<ProductDTO> findAllPaged(PageRequest pageRequest, Long categoryId, String name) {
+		List<Category> categories = (categoryId == 0) ? null : Arrays.asList(categoryRepository.getOne(categoryId));
+		Page<Product> page = repository.find(categories, pageRequest, name);
+		repository.findWithCategory(page.toList());
 		return page.map(x -> new ProductDTO(x, x.getCategories()));
 	}
 	
