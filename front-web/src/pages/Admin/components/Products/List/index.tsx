@@ -3,21 +3,26 @@ import { useHistory } from 'react-router-dom';
 import Card from '../Card';
 import { useCallback, useEffect, useState } from 'react';
 import { makeRequest } from 'core/utils/request';
-import { ProductsResponse } from 'core/types/Product';
+import { Category, ProductsResponse } from 'core/types/Product';
 import Pagination from 'core/components/Pagination';
 import { toast } from 'react-toastify';
 import CardLoader from '../Loaders/ProductCardLoader';
+import ProductFilters from 'core/components/ProductFilters';
 
 const List = () => {
     const history = useHistory();
     const [productResponse, setProductResponse] = useState<ProductsResponse>();
     const [isLoading, setIsLoading] = useState(false);
     const [activePage, setActivePage] = useState(0);
+    const [name,SetName] = useState('');
+    const [category,setCategory] = useState<Category>();
 
     const getProducts = useCallback(() => {
         const params = {
             page: activePage,
             linesPerPage: 4,
+            name: name,
+            categoryId: category?.id,
             direction: 'DESC',
             orderBy: 'id'
         }
@@ -27,7 +32,7 @@ const List = () => {
             .finally(() => {
                 setIsLoading(false);
             })
-    }, [activePage])
+    }, [activePage, name, category])
 
     useEffect(() => {
         getProducts();
@@ -51,11 +56,36 @@ const List = () => {
         }
     }
 
+    const handleChangeName = (name: string) => {
+        setActivePage(0);
+        SetName(name);
+    }
+
+    const handleChangeCategory = (category: Category) => {
+        setActivePage(0);
+        setCategory(category);
+    }
+
+    const clearFilters = () => {
+        setActivePage(0);
+        SetName('');
+        setCategory(undefined);
+    }
+
     return (
         <div className="admin-products-list">
-            <button className="btn btn-primary btn-lg text-white" onClick={handleCreate}>
-                ADICIONAR
-            </button>
+            <div className='d-flex justify-content-between'>
+                <button className="btn btn-primary btn-lg text-white" onClick={handleCreate}>
+                    ADICIONAR
+                </button>
+                <ProductFilters 
+                name={name}
+                category={category}
+                handleChangeCategory={handleChangeCategory}
+                handleChangeName={handleChangeName}
+                clearFilters={clearFilters}
+                />
+            </div>
             <div className='admin-list-container'>
                 {isLoading ? <CardLoader /> :
                     productResponse?.content.map(product => (
