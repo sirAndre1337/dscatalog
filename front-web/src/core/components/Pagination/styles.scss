@@ -24,6 +24,10 @@
     &.active {
        background: #407bff; 
     }
+
+    &:hover {
+        color: #FFF;
+    }
 }
 
 .pagination-previous {
@@ -42,6 +46,13 @@
 }
 
 .page-inactive {
-    color: #E1E1E1;
     pointer-events: none;
+
+    a {
+        color: #E1E1E1;
+    }
+}
+
+.pagination {
+    align-items: center;
 }

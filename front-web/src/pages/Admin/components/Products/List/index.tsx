@@ -94,7 +94,6 @@ const List = () => {
             </div>
             {productResponse && <Pagination
                 totalPages={productResponse.totalPages}
-                activePage={activePage}
                 onChange={page => setActivePage(page)}
             />}
         </div>
