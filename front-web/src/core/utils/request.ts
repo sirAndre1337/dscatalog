@@ -14,7 +14,7 @@ type LoginData = {
     password: string;
 }
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = process.env.REACT_APP_BACKEND_URL ?? 'https://andre-dscatalog.herokuapp.com';
 const token = `${CLIENT_ID}:${CLIENT_SECRET}`;
 
 
