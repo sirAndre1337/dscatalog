@@ -32,6 +32,7 @@ const Pagination = ({ totalPages, onChange }: Props) => {
             previousClassName='page-active'
             nextClassName='page-active'
             disabledClassName='page-inactive'
+            onClick={() => window.scrollTo(0, 0)}
             />
         </div>
 
