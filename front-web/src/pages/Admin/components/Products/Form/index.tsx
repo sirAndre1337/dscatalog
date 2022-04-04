@@ -71,7 +71,7 @@ const Form = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <BaseForm title={isEditing ? 'Editar produto' : 'Cadastrar um produto'}>
                 <div className='row'>
-                    <div className="col-6">
+                    <div className="">
                         <div className='margin-bottom-30'>
                             <input
                                 type="text"
@@ -135,7 +135,7 @@ const Form = () => {
                                 </div>}
                         </div>
                     </div>
-                    <div className="col-6">
+                    <div className="">
                         <textarea
                             className='form-control input-base h-auto'
                             cols={30}

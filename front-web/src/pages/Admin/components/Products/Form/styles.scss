@@ -12,3 +12,13 @@
 .categories-select__placeholder {
     columns: #9e9e9e;
 }
+
+@media (max-width: 576px) {
+    .categories-select__control {
+        height: 100%;
+    }
+
+    .input-base {
+        width: 100%;
+    }
+}
