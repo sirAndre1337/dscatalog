@@ -31,3 +31,15 @@
         border-color: #6c757d;
     }
 }
+
+@media (max-width: 1085px) {
+    .btn-edit {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .admin-container {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,14 @@
+.admin-product-btn-filter {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 1300px) {
+    .admin-product-btn-filter {
+        flex-direction: column;
+    }
+
+    .admin-product-btn {
+        margin-bottom: 30px;
+    }
+}

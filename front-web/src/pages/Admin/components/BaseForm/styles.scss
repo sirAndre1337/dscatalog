@@ -30,3 +30,15 @@
     margin-top: 70px;
     text-align: right;
 }
+
+@media (max-width: 1350px) {
+    .admin-base-form {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1085px) {
+    .outline-danger {
+        font-size: 14px;
+    }
+}
