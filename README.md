@@ -61,7 +61,7 @@ Pré-requisitos: Java 11
 
 ```
 # clonar repositório
-git clone https://github.com/RangelMoreira/dscatalog.git
+git clone https://github.com/sirAndre1337/dscatalog.git
 
 # entrar na pasta do projeto back end
 cd backend
